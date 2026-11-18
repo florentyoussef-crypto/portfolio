@@ -28,8 +28,11 @@ html, body { height: 100%; }
 body {
   margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body);
   -webkit-font-smoothing: antialiased; overflow: hidden;
-  background-image: radial-gradient(circle at 1px 1px, #221A36 1px, transparent 0);
-  background-size: 26px 26px;
+  background-image:
+    radial-gradient(60% 55% at 50% 48%, rgba(124, 92, 255, .20), transparent 70%),
+    radial-gradient(40% 40% at 85% 10%, rgba(196, 181, 253, .08), transparent 70%),
+    radial-gradient(circle at 1px 1px, #241B3A 1px, transparent 0);
+  background-size: 100% 100%, 100% 100%, 26px 26px;
 }
 a { color: inherit; }
 button { font: inherit; color: inherit; }
@@ -50,27 +53,45 @@ p { margin: 0; }
 /* Carte */
 .map-wrap { position: relative; min-height: 0; }
 #map { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.link { stroke: var(--fiber); stroke-width: 2.5; opacity: .55; stroke-linecap: round; transition: opacity .25s, stroke-width .25s; }
-.link.leaf { stroke-width: 1.6; opacity: .4; stroke-dasharray: 2 6; }
-.link.on { opacity: 1; stroke-width: 4; stroke-dasharray: none; }
-.pkt { fill: #EDE9FE; }
+.link { stroke-width: 2.5; opacity: .7; stroke-linecap: round; transition: opacity .25s, stroke-width .25s; }
+.link.leaf { stroke-width: 1.8; opacity: .55; stroke-dasharray: 1 7; }
+.link.on { opacity: 1; stroke-width: 4.5; stroke-dasharray: none; }
+.pkt { fill: #F5F3FF; }
+.orbit { fill: none; stroke: #6D55C9; stroke-width: 1; stroke-dasharray: 2 10; opacity: .35; }
+.orbits { transform-box: view-box; animation: spin 140s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.icon { fill: none; stroke: var(--fiber); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.node.leaf .icon { stroke-width: 1.7; }
+.node .outer { fill: none; stroke: var(--fiber); stroke-width: 1; opacity: .25; }
 .node { cursor: pointer; outline: none; }
-.node .ring { fill: var(--node); stroke: var(--fiber); stroke-width: 2; transition: fill .2s, stroke-width .2s; }
+.node .ring { fill: url(#nodefill); stroke: var(--fiber); stroke-width: 2; transition: stroke-width .2s; }
 .node.leaf .ring { stroke: #8B6FE0; stroke-width: 1.5; }
 .node .halo { fill: none; stroke: var(--fiber); stroke-width: 1; opacity: 0; transition: opacity .2s, r .2s; }
 .node .code { fill: var(--fiber); font: 600 15px var(--mono); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
 .node.leaf .code { font-size: 12px; }
 .node .lab { fill: var(--ink); font: 700 17px var(--body); text-anchor: middle; pointer-events: none; }
-.lbg { fill: var(--bg); opacity: .92; }
+.lbg { fill: #140F24; opacity: .88; stroke: rgba(167, 139, 250, .2); stroke-width: 1; }
 .node .sub { fill: var(--muted); font: 400 12px var(--mono); text-anchor: middle; pointer-events: none; }
 .node.leaf .lab { font-size: 14px; }
-.node:hover .ring, .node:focus-visible .ring, .node.active .ring { fill: #271E45; stroke-width: 3; }
+.node:hover .ring, .node:focus-visible .ring, .node.active .ring { stroke-width: 3; }
+.node:hover .icon, .node:focus-visible .icon, .node.active .icon { stroke: #F5F3FF; }
+.node { transition: opacity .25s; }
+.node .scale { transition: transform .2s cubic-bezier(.2,.8,.2,1); }
+.node:hover .scale, .node:focus-visible .scale { transform: scale(1.07); }
 .node:hover .halo, .node:focus-visible .halo, .node.active .halo { opacity: .6; }
 .node:focus-visible .lab { text-decoration: underline; }
-.hub .ring { stroke-width: 3; fill: var(--fiber); }
-.hub:hover .ring, .hub:focus-visible .ring, .hub.active .ring { fill: #C4B5FD; }
-.hub .mono { fill: #1B1033; font: 800 40px var(--display); text-anchor: middle; dominant-baseline: central; pointer-events: none; letter-spacing: -.02em; }
-.hub .hubsub { fill: #1B1033; font: 600 10px var(--mono); text-anchor: middle; pointer-events: none; text-transform: uppercase; letter-spacing: .12em; opacity: .75; }
+.hub .ring { stroke-width: 0; fill: url(#hubfill); filter: url(#glow); }
+.hub:hover .ring, .hub:focus-visible .ring, .hub.active .ring { stroke: #F5F3FF; stroke-width: 2; }
+.hub .halo { display: none; }
+.hub .beat { transform-box: fill-box; transform-origin: center; animation: heartbeat 3s ease-in-out infinite; }
+@keyframes heartbeat { 0% { transform: scale(1); } 6% { transform: scale(1.1); } 12% { transform: scale(1); } 18% { transform: scale(1.05); } 26%, 100% { transform: scale(1); } }
+.hub .ripple { fill: none; stroke: #B9A6FF; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: ripple 1.6s ease-out infinite; }
+.hub .ripple.r2 { animation-delay: .3s; stroke-width: 1.2; }
+@keyframes ripple { 0% { transform: scale(1); opacity: .65; } 70%, 100% { transform: scale(1.8); opacity: 0; } }
+.dot { fill: #F5F3FF; }
+.bit { fill: #E2DAFF; font: 700 10px var(--mono); text-anchor: middle; dominant-baseline: central; }
+.hub .mono { fill: #FFFFFF; font: 800 34px var(--display); text-anchor: middle; dominant-baseline: central; pointer-events: none; letter-spacing: -.02em; }
+.hub .hubsub { fill: #EDE7FF; font: 600 10px var(--mono); text-anchor: middle; pointer-events: none; text-transform: uppercase; letter-spacing: .12em; opacity: .75; }
 .hub .name { fill: var(--ink); font: 800 26px var(--display); text-anchor: middle; pointer-events: none; }
 .hub .role { fill: var(--muted); font: 500 12px var(--mono); text-anchor: middle; pointer-events: none; }
 .dim .node:not(.active) { opacity: .35; }
@@ -87,17 +108,25 @@ p { margin: 0; }
 .scrim.open { opacity: 1; pointer-events: auto; }
 .panel {
   position: fixed; z-index: 30; top: 12px; right: 12px; bottom: 12px; width: min(640px, calc(100% - 24px));
-  background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 24px 80px rgba(0,0,0,.45);
+  background: rgba(23, 17, 42, .86); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  border: 1px solid rgba(167, 139, 250, .22); border-radius: 20px; box-shadow: 0 30px 90px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
+  overflow: hidden;
   display: grid; grid-template-rows: auto 1fr; transform: translateX(calc(100% + 24px)); transition: transform .32s cubic-bezier(.2,.8,.2,1);
 }
 .panel.open { transform: none; }
+.panel.left { left: 12px; right: auto; transform: translateX(calc(-100% - 24px)); }
+.panel.left.open { transform: none; }
 @media (max-width: 700px) {
-  .panel { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: 86%; transform: translateY(calc(100% + 16px)); }
+  .panel, .panel.left { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: 86%; transform: translateY(calc(100% + 16px)); }
+  .panel.open, .panel.left.open { transform: none; }
 }
-.p-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 20px 22px 14px; border-bottom: 1px solid var(--line); }
+.p-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 22px 22px 16px; border-bottom: 1px solid var(--line); position: relative;
+  background: linear-gradient(180deg, rgba(124, 92, 255, .14), transparent); }
+.p-head::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: linear-gradient(90deg, #7C5CFF, #C4B5FD, #7C5CFF); }
 .crumb { font: 500 12px/1.4 var(--mono); color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .crumb button { background: none; border: 0; padding: 0; color: var(--fiber); cursor: pointer; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.p-head h2 { font: 800 clamp(28px, 4.4vw, 38px)/1.05 var(--display); margin-top: 6px; letter-spacing: -.01em; }
+.p-head h2 { font: 800 clamp(28px, 4.4vw, 40px)/1.05 var(--display); margin-top: 6px; letter-spacing: -.015em;
+  background: linear-gradient(90deg, #FFFFFF, #C4B5FD); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .close { flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--node); cursor: pointer; font: 600 18px/1 var(--mono); }
 .close:hover { border-color: var(--fiber); }
 .p-body { overflow-y: auto; padding: 20px 22px 28px; display: grid; gap: 22px; align-content: start; }
@@ -121,7 +150,8 @@ p { margin: 0; }
 .me { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center; }
 .me img { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid var(--fiber); }
 .cards { display: grid; gap: 12px; }
-.card { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: var(--node); display: grid; gap: 8px; }
+.card { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: linear-gradient(160deg, #221A3E, #1A1430); display: grid; gap: 8px; transition: border-color .2s, transform .2s; }
+.card:hover { border-color: rgba(167, 139, 250, .55); transform: translateY(-2px); }
 .card h3 { font: 800 22px/1.1 var(--display); }
 .card .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .go { background: var(--fiber); color: #1B1033; border: 0; border-radius: 8px; padding: 9px 14px; font: 700 14px/1 var(--body); cursor: pointer; }
@@ -192,17 +222,29 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
   .strip { font-size: 11px; gap: 4px 12px; }
 }
 @media (max-width: 420px) { .status .long { display: none; } }
-@media (prefers-reduced-motion: reduce) {
-  .led { animation: none; }
-  .panel, .scrim, .node, .link { transition: none; }
-}
+/* Animations coupées quand le visiteur l'a demandé (réglage système ou bouton) */
+body.no-anim .led { animation: none; }
+body.no-anim .panel, body.no-anim .scrim, body.no-anim .node, body.no-anim .link, body.no-anim .card, body.no-anim .node .scale { transition: none; }
+body.no-anim .orbits, body.no-anim .hub .beat, body.no-anim .hub .ripple { animation: none; }
+body.no-anim .hub .ripple { display: none; }
+.top-right { display: flex; align-items: center; gap: 8px; }
+.anim-btn { display: inline-flex; align-items: center; gap: 7px; font: 500 12px/1 var(--mono); padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--muted); cursor: pointer; }
+.anim-btn:hover { color: var(--ink); border-color: var(--fiber); }
+.anim-btn .sw { width: 22px; height: 12px; border-radius: 999px; background: #3A3058; position: relative; transition: background .2s; }
+.anim-btn .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 8px; height: 8px; border-radius: 50%; background: #CFC6EA; transition: transform .2s; }
+.anim-btn[aria-pressed="true"] .sw { background: var(--fiber); }
+.anim-btn[aria-pressed="true"] .sw::after { transform: translateX(10px); background: #fff; }
+@media (max-width: 520px) { .anim-btn .lbl { display: none; } }
 </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
     <div class="brand">Florent Youssef<small>BUT Réseaux &amp; Télécoms · parcours Cloud</small></div>
-    <div class="status"><span class="led" aria-hidden="true"></span>Disponible<span class="long"> : alternance ou stage</span></div>
+    <div class="top-right">
+      <button class="anim-btn" id="anim-toggle" type="button" aria-pressed="true"><span class="sw" aria-hidden="true"></span><span class="lbl">Animations</span></button>
+      <div class="status"><span class="led" aria-hidden="true"></span>Disponible<span class="long"> : alternance ou stage</span></div>
+    </div>
   </header>
 
   <main class="map-wrap" aria-label="Carte du portfolio">
@@ -545,6 +587,17 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
       competences: [105, 420], parcours: [495, 420], engagement: [140, 760], contact: [460, 760] } }
   };
   var R = { 0: 58, 1: 42, 2: 31 };
+  // Icônes dessinées en 24 x 24
+  var ICONS = {
+    projets: "M3 7h6l2 2h10v10H3z M3 11h18",
+    competences: "M7 7h10v10H7z M10 3v4 M14 3v4 M10 17v4 M14 17v4 M3 10h4 M3 14h4 M17 10h4 M17 14h4",
+    parcours: "M2 9l10-5 10 5-10 5z M6 11v5c3 2.2 9 2.2 12 0v-5 M22 9v5",
+    engagement: "M12 20s-7.5-4.6-7.5-10.2A4.1 4.1 0 0 1 12 7.4a4.1 4.1 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z",
+    contact: "M3 6h18v12H3z M3 7l9 7 9-7",
+    homelab: "M4 4h16v6H4z M4 14h16v6H4z M8 7h.01 M8 17h.01 M12 7h4 M12 17h4",
+    reverdir: "M3 8h10a3 3 0 1 0-3-3 M3 12h15a3 3 0 1 1-3 3 M3 16h7",
+    sae21: "M10 3h4v4h-4z M3 17h4v4H3z M17 17h4v4h-4z M12 7v5 M5 17v-3h14v3"
+  };
   var NS = "http://www.w3.org/2000/svg";
   var svg = document.getElementById("map");
   var panel = document.getElementById("panel");
@@ -552,7 +605,24 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
   var body = document.getElementById("p-body");
   var titleEl = document.getElementById("p-title");
   var crumb = document.getElementById("crumb");
+  // Animations : réglage système par défaut, le bouton permet de choisir
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  try { var saved = localStorage.getItem("anim"); if (saved === "on") reduce = false; if (saved === "off") reduce = true; } catch (e) {}
+  var ticking = false;
+  var animBtn = document.getElementById("anim-toggle");
+  function applyAnim() {
+    document.body.classList.toggle("no-anim", reduce);
+    animBtn.setAttribute("aria-pressed", reduce ? "false" : "true");
+    animBtn.title = reduce ? "Activer les animations" : "Couper les animations";
+  }
+  animBtn.addEventListener("click", function () {
+    reduce = !reduce;
+    try { localStorage.setItem("anim", reduce ? "off" : "on"); } catch (e) {}
+    applyAnim();
+    if (reduce) { parts.forEach(function (p) { p.el.remove(); }); parts = []; }
+    else { setupParticles(); ambient(); }
+  });
+  applyAnim();
   var layout, linkEls = {}, nodeEls = {}, current = null, lastFocus = null;
 
   function el(tag, attrs, parent) {
@@ -571,27 +641,47 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
     svg.innerHTML = "";
     linkEls = {}; nodeEls = {};
     var defs = el("defs", {}, svg);
-    var cp = el("clipPath", { id: "hubclip" }, defs);
-    el("circle", { cx: 0, cy: 0, r: R[0] - 6 }, cp);
-    var gl = el("g", {}, svg), gp = el("g", {}, svg), gn = el("g", {}, svg);
+    var hf = el("radialGradient", { id: "hubfill", cx: "35%", cy: "30%", r: "75%" }, defs);
+    el("stop", { offset: "0%", "stop-color": "#A48BFF" }, hf); el("stop", { offset: "100%", "stop-color": "#4C2BB8" }, hf);
+    var nf = el("radialGradient", { id: "nodefill", cx: "35%", cy: "30%", r: "80%" }, defs);
+    el("stop", { offset: "0%", "stop-color": "#2A2050" }, nf); el("stop", { offset: "100%", "stop-color": "#15102A" }, nf);
+    var fl = el("filter", { id: "glow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+    el("feGaussianBlur", { stdDeviation: "6", result: "b" }, fl);
+    var fm = el("feMerge", {}, fl); el("feMergeNode", { "in": "b" }, fm); el("feMergeNode", { "in": "SourceGraphic" }, fm);
+    var fl2 = el("filter", { id: "softglow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+    el("feGaussianBlur", { stdDeviation: "2.5", result: "b" }, fl2);
+    var fm2 = el("feMerge", {}, fl2); el("feMergeNode", { "in": "b" }, fm2); el("feMergeNode", { "in": "SourceGraphic" }, fm2);
+    var hub = layout.pos.moi;
+    var go = el("g", { "class": "orbits", style: "transform-origin:" + hub[0] + "px " + hub[1] + "px" }, svg);
+    [150, 265, 380].forEach(function (rr) { el("circle", { "class": "orbit", cx: hub[0], cy: hub[1], r: rr }, go); });
+    var gl = el("g", { filter: "url(#softglow)" }, svg), gp = el("g", { filter: "url(#softglow)" }, svg), gn = el("g", {}, svg);
     svg._packets = gp;
     Object.keys(NODES).forEach(function (id) {
       var n = NODES[id]; if (!n.parent) return;
       var a = layout.pos[n.parent], b = layout.pos[id];
-      linkEls[id] = el("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], "class": "link" + (n.tier === 2 ? " leaf" : "") }, gl);
+      var lg = el("linearGradient", { id: "lg-" + id, gradientUnits: "userSpaceOnUse", x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, defs);
+      el("stop", { offset: "0%", "stop-color": "#8B6CFF" }, lg); el("stop", { offset: "100%", "stop-color": "#D6CCFF" }, lg);
+      linkEls[id] = el("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: "url(#lg-" + id + ")", "class": "link" + (n.tier === 2 ? " leaf" : "") }, gl);
     });
     Object.keys(NODES).forEach(function (id) {
       var n = NODES[id], p = layout.pos[id], r = R[n.tier];
       var g = el("g", { "class": "node" + (n.tier === 0 ? " hub" : "") + (n.tier === 2 ? " leaf" : ""), transform: "translate(" + p[0] + "," + p[1] + ")", tabindex: 0, role: "button", "aria-label": "Ouvrir " + (n.title || n.label) }, gn);
-      el("circle", { "class": "halo", r: r + 9 }, g);
-      el("circle", { "class": "ring", r: r }, g);
+      var sc = el("g", { "class": "scale" }, g);
       if (n.tier === 0) {
-        var mono = el("text", { "class": "mono", y: -6 }, g); mono.textContent = "FY";
-        var hs = el("text", { "class": "hubsub", y: 30 }, g); hs.textContent = "à propos";
+        sc = el("g", { "class": "beat" }, sc);
+        sc.addEventListener("animationiteration", beatBurst);
+        sc.addEventListener("animationstart", beatBurst);
+      }
+      el("circle", { "class": "halo", r: r + 9 }, sc);
+      if (n.tier !== 0) el("circle", { "class": "outer", r: r + 5 }, sc);
+      el("circle", { "class": "ring", r: r }, sc);
+      if (n.tier === 0) {
+        var mono = el("text", { "class": "mono", y: 0 }, sc); mono.textContent = "MOI";
         var t1 = el("text", { "class": "name", y: r + 36 }, g); t1.textContent = "Florent Youssef";
         var t2 = el("text", { "class": "role", y: r + 56 }, g); t2.textContent = "technicien systèmes, réseaux & cloud";
       } else {
-        var c = el("text", { "class": "code" }, g); c.textContent = n.code;
+        var k = n.tier === 1 ? 1.25 : 0.95;
+        el("path", { "class": "icon", d: ICONS[id], transform: "scale(" + k + ") translate(-12,-12)" }, sc);
         var l = el("text", { "class": "lab", y: r + 24 }, g); l.textContent = n.label;
         var s = el("text", { "class": "sub", y: r + 41 }, g); s.textContent = n.sub;
       }
@@ -601,6 +691,7 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
       nodeEls[id] = g;
     });
     if (current) mark(current);
+    setupParticles();
   }
 
   // Fond derrière les libellés pour que les fibres passent dessous
@@ -610,7 +701,7 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
     var x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
     texts.forEach(function (t) { var b = t.getBBox(); x1 = Math.min(x1, b.x); y1 = Math.min(y1, b.y); x2 = Math.max(x2, b.x + b.width); y2 = Math.max(y2, b.y + b.height); });
     if (!isFinite(x1)) return;
-    var rect = el("rect", { "class": "lbg", x: x1 - 8, y: y1 - 3, width: x2 - x1 + 16, height: y2 - y1 + 6, rx: 6 });
+    var rect = el("rect", { "class": "lbg", x: x1 - 10, y: y1 - 4, width: x2 - x1 + 20, height: y2 - y1 + 8, rx: 9 });
     g.insertBefore(rect, texts[0]);
   }
 
@@ -661,6 +752,8 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
       });
     });
     body.scrollTop = 0;
+    var px = layout.pos[id][0];
+    panel.classList.toggle("left", id !== "moi" && px < layout.w / 2);
     panel.classList.add("open"); scrim.classList.add("open");
     panel.setAttribute("aria-hidden", "false");
     document.getElementById("hint").style.visibility = "hidden";
@@ -699,14 +792,53 @@ figcaption { font: 400 12.5px/1.45 var(--body); color: var(--muted); margin-top:
     }
     step();
   }
-  function ambient() {
-    if (reduce) return;
-    var ids = Object.keys(NODES).filter(function (k) { return NODES[k].parent; });
-    setInterval(function () {
-      if (document.hidden) return;
-      sendPacket(ids[Math.floor(Math.random() * ids.length)]);
-    }, 900);
+  // Particules : des bits qui circulent dans les deux sens sur chaque fibre
+  var parts = [], lastT = 0;
+  function makePart(id, t, dir, burst) {
+    var glyph = Math.random() < 0.4, e;
+    if (glyph) { e = el("text", { "class": "bit" }, svg._packets); e.textContent = Math.random() < 0.5 ? "0" : "1"; }
+    else e = el("circle", { "class": "dot", r: (1.1 + Math.random() * 1.5).toFixed(2) }, svg._packets);
+    return { id: id, t: t, dir: dir, speed: 0.07 + Math.random() * 0.13, el: e, glyph: glyph, burst: !!burst };
   }
+  function setupParticles() {
+    parts = [];
+    if (reduce) return;
+    Object.keys(linkEls).forEach(function (id) {
+      var count = NODES[id].tier === 1 ? 8 : 4;
+      for (var i = 0; i < count; i++) parts.push(makePart(id, Math.random(), i % 2 ? 1 : -1));
+    });
+  }
+  function beatBurst() {
+    if (reduce || !layout) return;
+    Object.keys(linkEls).forEach(function (id) {
+      if (NODES[id].tier !== 1) return;
+      parts.push(makePart(id, 0, 1, true));
+    });
+  }
+  function tick(now) {
+    var dt = Math.min((now - (lastT || now)) / 1000, 0.05); lastT = now;
+    var dimmed = svg.classList.contains("dim");
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i], line = linkEls[p.id];
+      if (!line || !p.el.isConnected) { parts.splice(i, 1); continue; }
+      var on = line.classList.contains("on");
+      p.t += p.dir * p.speed * dt * (on ? 2.4 : 1) * (p.burst ? 2.2 : 1);
+      if (p.t > 1 || p.t < 0) {
+        if (p.burst) { p.el.remove(); parts.splice(i, 1); continue; }
+        p.t = p.dir > 0 ? 0 : 1;
+      }
+      var a = layout.pos[NODES[p.id].parent], b = layout.pos[p.id];
+      var dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, off = p.dir * 4;
+      var x = a[0] + dx * p.t - dy / len * off, y = a[1] + dy * p.t + dx / len * off;
+      var op = Math.sin(Math.PI * p.t) * (on ? 1 : 0.8) * (dimmed && !on ? 0.2 : 1) * (p.burst ? 1 : 0.85);
+      if (p.glyph) { p.el.setAttribute("x", x.toFixed(1)); p.el.setAttribute("y", y.toFixed(1)); }
+      else { p.el.setAttribute("cx", x.toFixed(1)); p.el.setAttribute("cy", y.toFixed(1)); }
+      p.el.setAttribute("opacity", op.toFixed(2));
+    }
+    if (reduce) { ticking = false; return; }
+    requestAnimationFrame(tick);
+  }
+  function ambient() { if (!reduce && !ticking) { ticking = true; requestAnimationFrame(tick); } }
 
   scrim.addEventListener("click", close);
   document.getElementById("close").addEventListener("click", close);
